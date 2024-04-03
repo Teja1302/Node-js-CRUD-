@@ -15,7 +15,7 @@ const con = mysql.createConnection({
 const app = express();
 app.use(body.json());
 
-// it will give what we require
+//-------- it will give particular what we  require----------------------------
 
 app.get('/customers/get', (req, res) => {
     let name = req?.query?.name
@@ -32,13 +32,10 @@ app.get('/customers/get', (req, res) => {
             })
         }
 
-
     })
-
-
 });
 
-// it will give total details of the table
+//--------------- it will give total details of the table--------------------------------
 
 app.get('/customers/list', (req, res) => {
     con.query("SELECT * FROM customers", function (err, info) {
@@ -47,10 +44,8 @@ app.get('/customers/list', (req, res) => {
             name: info
         })
     })
-
-
 })
-// To create a new data
+//---------------- To create a new data---------------------------------
 
 app.post('/customers/data', (req, res) => {
 
@@ -74,11 +69,11 @@ app.post('/customers/data', (req, res) => {
 
 })
 
-// To delete data
+//---->>>> To delete data -----------------------------------
 
 app.delete('/customers/data',(req,res) =>{
 
-const sqlquery='DELETE FROM customers WHERE id=32'
+const sqlquery='DELETE FROM customers WHERE id=29'
 
 let id=req?.query?.id
 
@@ -96,6 +91,26 @@ con.query(sqlquery,[id],function(err,result)
         })
     }
       
+    
+    })
+
+})
+
+// ---------->to update data -------------------------------------------
+
+app.put('/customers/data',(req, res)=>{
+    let {name , address} = req.body
+    console.log(name,address)
+    const sql = `UPDATE customers SET name = '${name}', address = '${address}' WHERE id = 21`;
+    let id=req?.query?.id
+    con.query(sql,function(err,result)
+    {
+        if(err)
+        {
+            console.log("error:",err)
+        }else{
+            res.status(200).json({name:result})
+        }
     })
 
 })
