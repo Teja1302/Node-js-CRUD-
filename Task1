@@ -1,0 +1,104 @@
+const express = require('express');
+
+const mysql = require('mysql');
+
+const body = require('body-parser')
+
+const con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "Teja@123",
+    database: "mydb"
+
+});
+
+const app = express();
+app.use(body.json());
+
+// it will give what we require
+
+app.get('/customers/get', (req, res) => {
+    let name = req?.query?.name
+    con.query(`SELECT * FROM customers WHERE name = ${name}`, function (err, info) {
+        if (err) console.log("errorrr:", err)
+        if (!info.length) {
+
+            res.status(404).json({ message: "data not found" })
+
+        }
+        else {
+            res.status(200).json({
+                name: info
+            })
+        }
+
+
+    })
+
+
+});
+
+// it will give total details of the table
+
+app.get('/customers/list', (req, res) => {
+    con.query("SELECT * FROM customers", function (err, info) {
+        if (err) console.log("errorrr:", err)
+        res.status(200).json({
+            name: info
+        })
+    })
+
+
+})
+// To create a new data
+
+app.post('/customers/data', (req, res) => {
+
+    let { name, address } = req.body;
+
+    console.log('ffd', name);
+
+    let insertquery = `INSERT INTO customers(name , address) VALUES("${name}","${address}")`
+
+    console.log("name",insertquery);
+
+    con.query(insertquery,  function (err, result) {
+        if (err) {
+            console.log("errrrr", err)
+        }
+        else {
+            res.status(200).json({ name: result })
+        }
+        
+    })
+
+})
+
+// To delete data
+
+app.delete('/customers/data',(req,res) =>{
+
+const sqlquery='DELETE FROM customers WHERE id=32'
+
+let id=req?.query?.id
+
+con.query(sqlquery,[id],function(err,result)
+{
+    if(err)
+    {
+        console.log("error:",err)
+
+    }
+
+    else{
+        res.status(200).json({
+            name:result
+        })
+    }
+      
+    })
+
+})
+
+
+app.listen(8080, console.log("connected sucessfully"));
